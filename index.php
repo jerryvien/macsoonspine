@@ -95,6 +95,7 @@
         </nav>
 
         <a class="cta-btn d-none d-sm-block" href="#appointment">Make an Appointment</a>
+        <a class="cta-btn d-none d-sm-block" href="dashboard.php">Admin Portal</a>
 
       </div>
 
