@@ -70,28 +70,36 @@
               <!-- Registration Form -->
               <form action="controller/register_patient.php" method="POST" onsubmit="return validateForm();">
                 <div class="row mb-3">
-                  <label for="firstName" class="col-md-4 col-lg-3 col-form-label">First Name</label>
+                  <label for="firstName" class="col-md-4 col-lg-3 col-form-label">
+                    First Name <span class="text-danger">*</span>
+                  </label>
                   <div class="col-md-8 col-lg-9">
                     <input name="first_name" type="text" class="form-control" id="firstName" required>
                   </div>
                 </div>
 
                 <div class="row mb-3">
-                  <label for="lastName" class="col-md-4 col-lg-3 col-form-label">Last Name</label>
+                  <label for="lastName" class="col-md-4 col-lg-3 col-form-label">
+                    Last Name <span class="text-danger">*</span>
+                  </label>
                   <div class="col-md-8 col-lg-9">
                     <input name="last_name" type="text" class="form-control" id="lastName" required>
                   </div>
                 </div>
 
                 <div class="row mb-3">
-                  <label for="dateOfBirth" class="col-md-4 col-lg-3 col-form-label">Date of Birth</label>
+                  <label for="dateOfBirth" class="col-md-4 col-lg-3 col-form-label">
+                    Date of Birth <span class="text-danger">*</span>
+                  </label>
                   <div class="col-md-8 col-lg-9">
                     <input name="date_of_birth" type="date" class="form-control" id="dateOfBirth" required>
                   </div>
                 </div>
 
                 <div class="row mb-3">
-                  <label for="gender" class="col-md-4 col-lg-3 col-form-label">Gender</label>
+                  <label for="gender" class="col-md-4 col-lg-3 col-form-label">
+                    Gender <span class="text-danger">*</span>
+                  </label>
                   <div class="col-md-8 col-lg-9">
                     <select name="gender" class="form-control" id="gender" required>
                       <option value="Male">Male</option>
@@ -102,7 +110,9 @@
                 </div>
 
                 <div class="row mb-3">
-                  <label for="phoneNumber" class="col-md-4 col-lg-3 col-form-label">Phone Number</label>
+                  <label for="phoneNumber" class="col-md-4 col-lg-3 col-form-label">
+                    Phone Number <span class="text-danger">*</span>
+                  </label>
                   <div class="col-md-8 col-lg-9">
                     <input name="phone_number" type="text" class="form-control" id="phoneNumber" required>
                   </div>
@@ -151,7 +161,9 @@
                 </div>
 
                 <div class="row mb-3">
-                  <label for="doctor" class="col-md-4 col-lg-3 col-form-label">Assigned Doctor</label>
+                  <label for="doctor" class="col-md-4 col-lg-3 col-form-label">
+                    Assigned Doctor <span class="text-danger">*</span>
+                  </label>
                   <div class="col-md-8 col-lg-9">
                     <select name="doctor_id" class="form-control" id="doctor" required>
                       <option value="">Select a Doctor</option>
@@ -187,6 +199,7 @@
         </div>
       </div>
     </section>
+
   </main><!-- End #main -->
 
   <?php include 'config/footer.php'; ?>
