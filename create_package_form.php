@@ -2,15 +2,10 @@
 // Include the database connection
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config/database.php';
 
-// Enable error reporting for debugging
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-
 // Initialize variables to store data for dropdowns
 $patients = [];
-$doctors = [];
+$doctor_name = "";
+$doctor_id = "";
 
 // Fetch patient details for the dropdown
 try {
@@ -21,15 +16,34 @@ try {
     echo "Error fetching patients: " . $e->getMessage();
 }
 
-// Fetch doctor details for the dropdown
-try {
-    $stmt = $conn->prepare("SELECT doctor_id, first_name, last_name FROM doctor_details");
-    $stmt->execute();
-    $doctors = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    echo "Error fetching doctors: " . $e->getMessage();
-}
+// Handle form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $patient_id = $_POST['patient_id'] ?? '';
+    $doctor_id = $_POST['doctor_id'] ?? '';
+    $package_name = $_POST['package_name'] ?? '';
+    $package_price = $_POST['package_price'] ?? '';
+    $remaining_hours = $_POST['remaining_hours'] ?? '';
+    $validity_period = $_POST['validity_period'] ?? '';
 
+    if (empty($patient_id) || empty($doctor_id) || empty($package_name) || empty($package_price) || empty($remaining_hours) || empty($validity_period)) {
+        $error_message = "All fields are required.";
+    } else {
+        // Insert package details into the database
+        try {
+            $stmt = $conn->prepare("INSERT INTO package_details (patient_id, doctor_id, package_name, package_price, remaining_hours, validity_period) VALUES (:patient_id, :doctor_id, :package_name, :package_price, :remaining_hours, :validity_period)");
+            $stmt->bindParam(':patient_id', $patient_id);
+            $stmt->bindParam(':doctor_id', $doctor_id);
+            $stmt->bindParam(':package_name', $package_name);
+            $stmt->bindParam(':package_price', $package_price);
+            $stmt->bindParam(':remaining_hours', $remaining_hours);
+            $stmt->bindParam(':validity_period', $validity_period);
+            $stmt->execute();
+            $success_message = "Package created successfully!";
+        } catch (PDOException $e) {
+            $error_message = "Error creating package: " . $e->getMessage();
+        }
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -40,19 +54,11 @@ try {
     <title>Create Package - NiceAdmin Bootstrap Template</title>
     <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="assets/css/style.css" rel="stylesheet">
-    <!-- Include Select2 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <!-- Include Select2 JS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    
 </head>
 <body>
-
-<?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/config/topbar.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/config/sidebar.php';
-?>
 
 <main id="main" class="main">
     <div class="pagetitle">
@@ -73,18 +79,15 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/config/sidebar.php';
                     <div class="card-body">
                         <h5 class="card-title">New Package Form</h5>
 
-                        <?php
-                        // Check for success or error messages
-                        if (isset($_GET['success']) && $_GET['success'] === 'true') {
-                            echo '<div class="alert alert-success mt-3">Package created successfully!</div>';
-                        }
-                        if (isset($_GET['error'])) {
-                            echo '<div class="alert alert-danger mt-3">' . htmlspecialchars($_GET['error']) . '</div>';
-                        }
-                        ?>
+                        <?php if (isset($error_message)): ?>
+                            <div class="alert alert-danger"><?= $error_message ?></div>
+                        <?php endif; ?>
+                        <?php if (isset($success_message)): ?>
+                            <div class="alert alert-success"><?= $success_message ?></div>
+                        <?php endif; ?>
 
                         <!-- Package Creation Form -->
-                        <form action="controller/create_package.php" method="POST">
+                        <form action="" method="POST">
                             <div class="row mb-3">
                                 <label for="patientId" class="col-md-4 col-lg-3 col-form-label">Patient</label>
                                 <div class="col-md-8 col-lg-9">
@@ -96,13 +99,11 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/config/sidebar.php';
                                     </select>
                                 </div>
                             </div>
-
                             <div class="row mb-3">
-                                <label for="doctorId" class="col-md-4 col-lg-3 col-form-label">Assigned Doctor</label>
+                                <label for="doctorName" class="col-md-4 col-lg-3 col-form-label">Assigned Doctor</label>
                                 <div class="col-md-8 col-lg-9">
-                                    <!-- Ensure this field is populated and readonly -->
                                     <input type="text" class="form-control" id="doctorName" name="doctor_name" readonly>
-                                    <input type="hidden" id="doctorId" name="doctor_id"> <!-- Hidden field to hold the doctor_id -->
+                                    <input type="hidden" id="doctorId" name="doctor_id">
                                 </div>
                             </div>
 
@@ -140,8 +141,6 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/config/sidebar.php';
                                 </div>
                             </div>
 
-                
-
                             <div class="text-center">
                                 <button type="submit" class="btn btn-primary">Create Package</button>
                             </div>
@@ -154,13 +153,15 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/config/sidebar.php';
 </main>
 
 <script>
-
     // Initialize Select2 for the patient field
     $(document).ready(function() {
         $('.select2').select2({
             placeholder: "Select a Patient",
             allowClear: true
         });
+
+        // Call fetchDoctor when the patient dropdown changes
+        document.getElementById("patientId").addEventListener("change", fetchDoctor);
     });
 
     // Function to populate remaining hours based on package selection
@@ -192,52 +193,33 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/config/sidebar.php';
 
     // Function to fetch the assigned doctor for the selected patient
     function fetchDoctor() {
-        const patientId = document.getElementById("patientId").value; // Get selected patient ID
+        const patientId = document.getElementById("patientId").value;
         if (patientId) {
-            // Fetch doctor details from the server using the patient ID
             fetch(`/controller/get_doctor.php?patient_id=${patientId}`)
-                .then(response => response.json()) // Parse the JSON response
+                .then(response => response.json())
                 .then(data => {
                     if (data && data.doctor_name) {
-                        // Populate the doctor name and set the hidden doctor ID
-                        document.getElementById("doctorName").value = data.doctor_name; // Set doctor name
-                        document.getElementById("doctorId").value = data.doctor_id; // Set doctor ID in hidden field
+                        document.getElementById("doctorName").value = data.doctor_name;
+                        document.getElementById("doctorId").value = data.doctor_id;
                     } else {
-                        // If doctor data is not found, show a default message
                         document.getElementById("doctorName").value = "Doctor not found";
-                        document.getElementById("doctorId").value = ""; // Clear doctor ID
+                        document.getElementById("doctorId").value = "";
                     }
                 })
                 .catch(error => {
-                    console.error("Error fetching doctor details:", error); // Log errors to the console
-                    document.getElementById("doctorName").value = "Error fetching doctor"; // Show error message
-                    document.getElementById("doctorId").value = ""; // Clear doctor ID
+                    console.error("Error fetching doctor details:", error);
+                    document.getElementById("doctorName").value = "Error fetching doctor";
+                    document.getElementById("doctorId").value = "";
                 });
         } else {
-            // If no patient is selected, clear the doctor fields
             document.getElementById("doctorName").value = "";
             document.getElementById("doctorId").value = "";
         }
     }
-
-        // Call fetchDoctor when the patient dropdown changes
-        document.getElementById("patientId").addEventListener("change", fetchDoctor);
-
 </script>
 
-
-
-<?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/config/footer.php';
-?>
-
-<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
-
-<!-- Vendor JS Files -->
 <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="assets/js/main.js"></script>
-
-
 
 </body>
 </html>
