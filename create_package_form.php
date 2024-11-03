@@ -1,49 +1,3 @@
-<?php
-// Include the database connection
-require_once $_SERVER['DOCUMENT_ROOT'] . '/config/database.php';
-
-// Initialize variables to store data for dropdowns
-$patients = [];
-
-// Fetch patient details for the dropdown
-try {
-    $stmt = $conn->prepare("SELECT patient_id, first_name, last_name FROM patient_details");
-    $stmt->execute();
-    $patients = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    echo "Error fetching patients: " . $e->getMessage();
-}
-
-// Handle form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $patient_id = $_POST['patient_id'] ?? '';
-    $doctor_id = $_POST['doctor_id'] ?? '';
-    $package_name = $_POST['package_name'] ?? '';
-    $package_price = $_POST['package_price'] ?? '';
-    $remaining_hours = $_POST['remaining_hours'] ?? '';
-    $validity_period = $_POST['validity_period'] ?? '';
-
-    if (empty($patient_id) || empty($doctor_id) || empty($package_name) || empty($package_price) || empty($remaining_hours) || empty($validity_period)) {
-        $error_message = "All fields are required.";
-    } else {
-        // Insert package details into the database
-        try {
-            $stmt = $conn->prepare("INSERT INTO package_details (patient_id, doctor_id, package_name, package_price, remaining_hours, validity_period) VALUES (:patient_id, :doctor_id, :package_name, :package_price, :remaining_hours, :validity_period)");
-            $stmt->bindParam(':patient_id', $patient_id);
-            $stmt->bindParam(':doctor_id', $doctor_id);
-            $stmt->bindParam(':package_name', $package_name);
-            $stmt->bindParam(':package_price', $package_price);
-            $stmt->bindParam(':remaining_hours', $remaining_hours);
-            $stmt->bindParam(':validity_period', $validity_period);
-            $stmt->execute();
-            $success_message = "Package created successfully!";
-        } catch (PDOException $e) {
-            $error_message = "Error creating package: " . $e->getMessage();
-        }
-    }
-}
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -164,7 +118,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/config/sidebar.php';
         });
 
         // Call fetchDoctor when the patient dropdown changes
-        document.getElementById("patientId").addEventListener("change", fetchDoctor);
+        $('#patientId').on('change', fetchDoctor);
     });
 
     // Function to populate remaining hours based on package selection
@@ -196,27 +150,31 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/config/sidebar.php';
 
     // Function to fetch the assigned doctor for the selected patient
     function fetchDoctor() {
-        const patientId = document.getElementById("patientId").value;
+        const patientId = $('#patientId').val();
         if (patientId) {
-            fetch(`/controller/get_doctor.php?patient_id=${patientId}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data && data.doctor_name) {
-                        document.getElementById("doctorName").value = data.doctor_name;
-                        document.getElementById("doctorId").value = data.doctor_id;
+            $.get(`/controller/get_doctor.php?patient_id=${patientId}`, function(data) {
+                try {
+                    const response = JSON.parse(data);
+                    if (response.doctor_name) {
+                        $('#doctorName').val(response.doctor_name);
+                        $('#doctorId').val(response.doctor_id);
                     } else {
-                        document.getElementById("doctorName").value = "Doctor not found";
-                        document.getElementById("doctorId").value = "";
+                        $('#doctorName').val("Doctor not found");
+                        $('#doctorId').val("");
                     }
-                })
-                .catch(error => {
-                    console.error("Error fetching doctor details:", error);
-                    document.getElementById("doctorName").value = "Error fetching doctor";
-                    document.getElementById("doctorId").value = "";
-                });
+                } catch (error) {
+                    console.error("Error parsing doctor details:", error);
+                    $('#doctorName').val("Error fetching doctor");
+                    $('#doctorId').val("");
+                }
+            }).fail(function() {
+                console.error("Error fetching doctor details");
+                $('#doctorName').val("Error fetching doctor");
+                $('#doctorId').val("");
+            });
         } else {
-            document.getElementById("doctorName").value = "";
-            document.getElementById("doctorId").value = "";
+            $('#doctorName').val("");
+            $('#doctorId').val("");
         }
     }
 </script>
