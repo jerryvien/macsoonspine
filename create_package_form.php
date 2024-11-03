@@ -73,12 +73,15 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/config/sidebar.php';
                     <div class="card-body">
                         <h5 class="card-title">New Package Form</h5>
 
-                        <?php if (isset($error_message)): ?>
-                            <div class="alert alert-danger"><?= $error_message ?></div>
-                        <?php endif; ?>
-                        <?php if (isset($success_message)): ?>
-                            <div class="alert alert-success"><?= $success_message ?></div>
-                        <?php endif; ?>
+                        <?php
+                        // Check for success or error messages
+                        if (isset($_GET['success']) && $_GET['success'] === 'true') {
+                            echo '<div class="alert alert-success mt-3">Package created successfully!</div>';
+                        }
+                        if (isset($_GET['error'])) {
+                            echo '<div class="alert alert-danger mt-3">' . htmlspecialchars($_GET['error']) . '</div>';
+                        }
+                        ?>
 
                         <!-- Package Creation Form -->
                         <form action="controller/create_package.php" method="POST">
