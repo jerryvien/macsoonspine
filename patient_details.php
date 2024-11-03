@@ -34,8 +34,8 @@
 
   <?php
   require_once $_SERVER['DOCUMENT_ROOT'] . '/config/database.php';
-  require_once '../config/topbar.php';
-  require_once '../config/sidebar.php';
+  require_once $_SERVER['DOCUMENT_ROOT'] . '/config/topbar.php';
+  require_once $_SERVER['DOCUMENT_ROOT'] . '/config/sidebar.php';
 
   // Fetch doctor details for the dropdown
   $doctors = [];
