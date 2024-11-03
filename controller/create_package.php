@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $packagePrice = $_POST['package_price'];
     $remainingHours = $_POST['remaining_hours'];
     $validityPeriod = $_POST['validity_period'];
-    $vipStatus = isset($_POST['vip_status']) ? 1 : 0;
+    
 
     // Fetch the assigned doctor
     $doctor = getAssignedDoctor($patientId);
@@ -21,15 +21,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error_message = "Doctor not found for the selected patient.";
     } else {
         try {
-            $stmt = $conn->prepare("INSERT INTO packages (patient_id, doctor_id, package_name, package_price, remaining_hours, validity_period, vip_status) 
-                                    VALUES (:patient_id, :doctor_id, :package_name, :package_price, :remaining_hours, :validity_period, :vip_status)");
+            $stmt = $conn->prepare("INSERT INTO packages (patient_id, doctor_id, package_name, package_price, remaining_hours, validity_period) 
+                                    VALUES (:patient_id, :doctor_id, :package_name, :package_price, :remaining_hours, :validity_period)");
             $stmt->bindParam(':patient_id', $patientId);
             $stmt->bindParam(':doctor_id', $doctor['doctor_id']);
             $stmt->bindParam(':package_name', $packageName);
             $stmt->bindParam(':package_price', $packagePrice);
             $stmt->bindParam(':remaining_hours', $remainingHours);
             $stmt->bindParam(':validity_period', $validityPeriod);
-            $stmt->bindParam(':vip_status', $vipStatus);
+            
 
             if ($stmt->execute()) {
                 $success_message = "Package created successfully!";

@@ -124,12 +124,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/config/sidebar.php';
                                 </div>
                             </div>
 
-                            <div class="row mb-3">
-                                <label for="vipStatus" class="col-md-4 col-lg-3 col-form-label">VIP Status</label>
-                                <div class="col-md-8 col-lg-9">
-                                    <input name="vip_status" type="checkbox" id="vipStatus">
-                                </div>
-                            </div>
+                
 
                             <div class="text-center">
                                 <button type="submit" class="btn btn-primary">Create Package</button>
