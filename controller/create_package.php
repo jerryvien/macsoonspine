@@ -1,49 +1,57 @@
 <?php
-// controller/create_package.php
-
-require_once '../config/database.php';
-require_once '../config/utilities.php';
-
 // Enable error reporting for debugging
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-$error_message = '';
-$success_message = '';
+// Include the database connection
+require_once $_SERVER['DOCUMENT_ROOT'] . '/config/database.php';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $patientId = $_POST['patient_id'];
-    $packageName = $_POST['package_name'];
-    $packagePrice = $_POST['package_price'];
-    $remainingHours = $_POST['remaining_hours'];
-    $validityPeriod = $_POST['validity_period'];
-    
+// Initialize a variable for error or success message
+$message = "";
 
-    // Fetch the assigned doctor
-    $doctor = getAssignedDoctor($patientId);
-    if (!$doctor) {
-        $error_message = "Doctor not found for the selected patient.";
-    } else {
+// Check if the form was submitted
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    // Get and sanitize form data
+    $patient_id = htmlspecialchars($_POST['patient_id']);
+    $doctor_id = htmlspecialchars($_POST['doctor_id']);
+    $package_name = htmlspecialchars($_POST['package_name']);
+    $package_price = htmlspecialchars($_POST['package_price']);
+    $remaining_hours = htmlspecialchars($_POST['remaining_hours']);
+    $validity_period = htmlspecialchars($_POST['validity_period']);
+
+    // Check if required fields are not empty
+    if (!empty($patient_id) && !empty($doctor_id) && !empty($package_name) && !empty($package_price) && !empty($remaining_hours) && !empty($validity_period)) {
         try {
-            $stmt = $conn->prepare("INSERT INTO packages (patient_id, doctor_id, package_name, package_price, remaining_hours, validity_period) 
-                                    VALUES (:patient_id, :doctor_id, :package_name, :package_price, :remaining_hours, :validity_period)");
-            $stmt->bindParam(':patient_id', $patientId);
-            $stmt->bindParam(':doctor_id', $doctor['doctor_id']);
-            $stmt->bindParam(':package_name', $packageName);
-            $stmt->bindParam(':package_price', $packagePrice);
-            $stmt->bindParam(':remaining_hours', $remainingHours);
-            $stmt->bindParam(':validity_period', $validityPeriod);
-            
+            // Prepare the SQL statement
+            $stmt = $conn->prepare("INSERT INTO packages (patient_id, doctor_id, package_name, package_price, remaining_hours, validity_period) VALUES (:patient_id, :doctor_id, :package_name, :package_price, :remaining_hours, :validity_period)");
 
+            // Bind parameters
+            $stmt->bindParam(':patient_id', $patient_id);
+            $stmt->bindParam(':doctor_id', $doctor_id);
+            $stmt->bindParam(':package_name', $package_name);
+            $stmt->bindParam(':package_price', $package_price);
+            $stmt->bindParam(':remaining_hours', $remaining_hours);
+            $stmt->bindParam(':validity_period', $validity_period);
+
+            // Execute the statement
             if ($stmt->execute()) {
-                $success_message = "Package created successfully!";
+                // Redirect back to the form page with a success message
+                header("Location: ../create_package_form.php?success=true");
+                exit();
             } else {
-                $error_message = "Failed to create package.";
+                $message = "Failed to create the package. Please try again.";
             }
         } catch (PDOException $e) {
-            $error_message = "Error: " . $e->getMessage();
+            $message = "Error: " . $e->getMessage();
         }
+    } else {
+        $message = "All fields are required.";
     }
 }
-?>
+
+// Redirect back to the form page with an error message if necessary
+if (!empty($message)) {
+    header("Location: ../create_package_form.php?error=" . urlencode($message));
+    exit();
+}
