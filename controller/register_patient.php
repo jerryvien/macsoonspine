@@ -1,6 +1,6 @@
 <?php
 // Include database configuration
-include 'config/database.php';
+include '../config/database.php';
 
 // Initialize a message variable
 $message = '';

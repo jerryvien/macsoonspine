@@ -33,9 +33,9 @@
 <body>
 
   <?php
-  include 'config/database.php'; // Database connection
-  include 'config/topbar.php';
-  include 'config/sidebar.php';
+  include '../config/database.php'; // Database connection
+  include '../config/topbar.php';
+  include '../config/sidebar.php';
 
   // Fetch doctor details for the dropdown
   $doctors = [];
