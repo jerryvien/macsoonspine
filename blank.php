@@ -40,7 +40,7 @@
 
 <body>
 
-  <?php include 'topbar.php'; ?>
+  <?php include 'config/topbar.php'; ?>
 
   <!-- ======= Sidebar ======= -->
   <aside id="sidebar" class="sidebar">
