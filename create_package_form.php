@@ -192,32 +192,36 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/config/sidebar.php';
 
     // Function to fetch the assigned doctor for the selected patient
     function fetchDoctor() {
-        const patientId = document.getElementById("patientId").value;
+        const patientId = document.getElementById("patientId").value; // Get selected patient ID
         if (patientId) {
-            fetch(`controller/get_doctor.php?patient_id=${patientId}`)
-                .then(response => response.json())
+            // Fetch doctor details from the server using the patient ID
+            fetch(`/controller/get_doctor.php?patient_id=${patientId}`)
+                .then(response => response.json()) // Parse the JSON response
                 .then(data => {
-                    if (data.doctor_id && data.doctor_name) {
-                        document.getElementById("doctorId").value = data.doctor_id; // Set doctor_id
-                        document.getElementById("doctorName").value = data.doctor_name; // Display doctor name
+                    if (data && data.doctor_name) {
+                        // Populate the doctor name and set the hidden doctor ID
+                        document.getElementById("doctorName").value = data.doctor_name; // Set doctor name
+                        document.getElementById("doctorId").value = data.doctor_id; // Set doctor ID in hidden field
                     } else {
-                        document.getElementById("doctorId").value = "";
+                        // If doctor data is not found, show a default message
                         document.getElementById("doctorName").value = "Doctor not found";
+                        document.getElementById("doctorId").value = ""; // Clear doctor ID
                     }
                 })
                 .catch(error => {
-                    console.error("Error fetching doctor details:", error);
-                    document.getElementById("doctorId").value = "";
-                    document.getElementById("doctorName").value = "Error fetching doctor";
+                    console.error("Error fetching doctor details:", error); // Log errors to the console
+                    document.getElementById("doctorName").value = "Error fetching doctor"; // Show error message
+                    document.getElementById("doctorId").value = ""; // Clear doctor ID
                 });
         } else {
-            document.getElementById("doctorId").value = "";
+            // If no patient is selected, clear the doctor fields
             document.getElementById("doctorName").value = "";
+            document.getElementById("doctorId").value = "";
         }
     }
 
-    // Call fetchDoctor when patient is selected
-    document.getElementById("patientId").addEventListener("change", fetchDoctor);
+        // Call fetchDoctor when the patient dropdown changes
+        document.getElementById("patientId").addEventListener("change", fetchDoctor);
 
 </script>
 
