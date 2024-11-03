@@ -166,7 +166,9 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/config/sidebar.php';
     </section>
 </main>
 
-<?php include '../config/footer.php'; // Include the footer ?>
+<?php
+require_once $_SERVER['DOCUMENT_ROOT'] . '/config/footer.php';
+?>
 
 <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
