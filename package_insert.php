@@ -74,7 +74,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/config/sidebar.php';
                             <div class="row mb-3">
                                 <label for="patientId" class="col-md-4 col-lg-3 col-form-label">Patient</label>
                                 <div class="col-md-8 col-lg-9">
-                                    <select name="patient_id" class="form-control" id="patientId" required>
+                                    <select name="patient_id" class="form-control" id="patientId" required onchange="fetchDoctor();">
                                         <option value="">Select a Patient</option>
                                         <?php foreach ($patients as $patient): ?>
                                             <option value="<?= $patient['patient_id'] ?>"><?= htmlspecialchars($patient['first_name'] . ' ' . $patient['last_name']) ?></option>
@@ -86,7 +86,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/config/sidebar.php';
                             <div class="row mb-3">
                                 <label for="doctorName" class="col-md-4 col-lg-3 col-form-label">Assigned Doctor</label>
                                 <div class="col-md-8 col-lg-9">
-                                    <input type="text" class="form-control" id="doctorName" disabled>
+                                    <input type="text" class="form-control" id="doctorName" name="doctor_name" readonly>
                                 </div>
                             </div>
 
@@ -143,7 +143,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/config/sidebar.php';
 </main>
 
 <script>
-    // JavaScript function to populate remaining hours based on package selection
+    // Function to populate remaining hours based on package selection
     function populateHours() {
         const packageName = document.getElementById("packageName").value;
         const remainingHours = document.getElementById("remainingHours");
@@ -169,7 +169,30 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/config/sidebar.php';
                 break;
         }
     }
+
+    // Function to fetch the assigned doctor for the selected patient
+    function fetchDoctor() {
+        const patientId = document.getElementById("patientId").value;
+        if (patientId) {
+            fetch(`controller/get_doctor.php?patient_id=${patientId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.doctor_name) {
+                        document.getElementById("doctorName").value = data.doctor_name;
+                    } else {
+                        document.getElementById("doctorName").value = "Doctor not found";
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching doctor details:", error);
+                    document.getElementById("doctorName").value = "Error fetching doctor";
+                });
+        } else {
+            document.getElementById("doctorName").value = "";
+        }
+    }
 </script>
+
 
 
 <?php
