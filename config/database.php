@@ -16,3 +16,5 @@ try {
 } catch (PDOException $e) {
     echo "Connection failed: " . $e->getMessage(); // Error message if connection fails
 }
+
+?>
