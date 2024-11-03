@@ -1,3 +1,21 @@
+<?php
+// Include the database connection
+require_once $_SERVER['DOCUMENT_ROOT'] . '/config/database.php';
+
+// Initialize variables to store data for dropdowns
+$patients = [];
+
+// Fetch patient details for the dropdown
+try {
+    $stmt = $conn->prepare("SELECT patient_id, first_name, last_name FROM patient_details");
+    $stmt->execute();
+    $patients = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    echo "Error fetching patients: " . $e->getMessage();
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
