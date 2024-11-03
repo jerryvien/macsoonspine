@@ -1,6 +1,11 @@
 <?php
 // controller/get_doctor.php
 
+// Enable error reporting for debugging
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 require_once '../config/utilities.php'; // Include the utilities file
 
 if (isset($_GET['patient_id'])) {

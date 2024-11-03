@@ -4,6 +4,11 @@
 require_once '../config/database.php';
 require_once '../config/utilities.php';
 
+// Enable error reporting for debugging
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 $error_message = '';
 $success_message = '';
 
