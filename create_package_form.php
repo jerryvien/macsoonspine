@@ -35,7 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     } else {
         // Insert the data into the database
         try {
-            $stmt = $conn->prepare("INSERT INTO packages (patient_id, doctor_id, package_name, package_price, remaining_hours, validity_period) VALUES (:patient_id, :doctor_id, :package_name, :package_price, :remaining_hours, :validity_period)");
+            $stmt = $conn->prepare("INSERT INTO package_details (patient_id, doctor_id, package_name, package_price, remaining_hours, validity_period) VALUES (:patient_id, :doctor_id, :package_name, :package_price, :remaining_hours, :validity_period)");
             $stmt->bindParam(':patient_id', $patient_id);
             $stmt->bindParam(':doctor_id', $doctor_id);
             $stmt->bindParam(':package_name', $package_name);
