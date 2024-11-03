@@ -41,7 +41,7 @@
 <body>
   
   <?php
-  include 'config.php';
+  include 'config/database.php';
   // You can now use $conn to interact with your database
   ?>
 
