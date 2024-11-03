@@ -52,8 +52,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Execute the statement
         $stmt->execute();
 
-        // Set success message
-        $message = "Patient registered successfully!";
+         // Redirect to the form with a success message
+         header("Location: ../register_patient_form.php?success=true");
+         exit();
     } catch (PDOException $e) {
         // Handle errors
         $message = "Error: " . $e->getMessage();
@@ -63,35 +64,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 // Close the database connection
 $conn = null;
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register New Patient</title>
-    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="assets/css/style.css" rel="stylesheet">
-</head>
-
-<body>
-    <div class="container mt-5">
-        <h2 class="text-center">Register New Patient</h2>
-
-        <!-- Display message -->
-        <?php if (!empty($message)): ?>
-            <div class="alert alert-info text-center"><?php echo $message; ?></div>
-        <?php endif; ?>
-
-        <!-- Back to Registration Form Button -->
-        <div class="text-center">
-            <a href="register_patient_form.php" class="btn btn-primary">Back to Registration Form</a>
-        </div>
-    </div>
-
-    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-</body>
-
-</html>

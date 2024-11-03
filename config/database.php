@@ -12,7 +12,7 @@ try {
     $conn = new PDO("mysql:host=$host;dbname=$dbName", $username, $password);
     // Set the PDO error mode to exception
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    echo "Connected successfully"; // Connection success message (for testing purposes)
+    //echo "Connected successfully"; // Connection success message (for testing purposes)
 } catch (PDOException $e) {
     echo "Connection failed: " . $e->getMessage(); // Error message if connection fails
 }
