@@ -35,6 +35,8 @@ try {
     <title>Create Package - NiceAdmin Bootstrap Template</title>
     <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="assets/css/style.css" rel="stylesheet">
+    <!-- Include Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 </head>
 <body>
 
@@ -74,7 +76,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/config/sidebar.php';
                             <div class="row mb-3">
                                 <label for="patientId" class="col-md-4 col-lg-3 col-form-label">Patient</label>
                                 <div class="col-md-8 col-lg-9">
-                                    <select name="patient_id" class="form-control" id="patientId" required onchange="fetchDoctor();">
+                                    <select name="patient_id" class="form-control select2" id="patientId" required>
                                         <option value="">Select a Patient</option>
                                         <?php foreach ($patients as $patient): ?>
                                             <option value="<?= $patient['patient_id'] ?>"><?= htmlspecialchars($patient['first_name'] . ' ' . $patient['last_name']) ?></option>
@@ -82,7 +84,6 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/config/sidebar.php';
                                     </select>
                                 </div>
                             </div>
-
                             <div class="row mb-3">
                                 <label for="doctorName" class="col-md-4 col-lg-3 col-form-label">Assigned Doctor</label>
                                 <div class="col-md-8 col-lg-9">
@@ -138,6 +139,15 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/config/sidebar.php';
 </main>
 
 <script>
+
+    // Initialize Select2 for the patient field
+    $(document).ready(function() {
+        $('.select2').select2({
+            placeholder: "Select a Patient",
+            allowClear: true
+        });
+    });
+
     // Function to populate remaining hours based on package selection
     function populateHours() {
         const packageName = document.getElementById("packageName").value;
@@ -199,6 +209,10 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/config/footer.php';
 <!-- Vendor JS Files -->
 <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="assets/js/main.js"></script>
+
+<!-- Include Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 </body>
 </html>
