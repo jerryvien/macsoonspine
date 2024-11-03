@@ -4,8 +4,6 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/config/database.php';
 
 // Initialize variables to store data for dropdowns
 $patients = [];
-$doctor_name = "";
-$doctor_id = "";
 
 // Fetch patient details for the dropdown
 try {
@@ -59,6 +57,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 </head>
 <body>
+
+<?php
+require_once $_SERVER['DOCUMENT_ROOT'] . '/config/topbar.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/config/sidebar.php';
+?>
 
 <main id="main" class="main">
     <div class="pagetitle">
@@ -218,8 +221,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 </script>
 
-<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="assets/js/main.js"></script>
+<?php require_once $_SERVER['DOCUMENT_ROOT'] . '/config/footer.php'; ?>
 
 </body>
 </html>
