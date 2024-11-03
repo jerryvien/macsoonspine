@@ -197,20 +197,28 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/config/sidebar.php';
             fetch(`controller/get_doctor.php?patient_id=${patientId}`)
                 .then(response => response.json())
                 .then(data => {
-                    if (data.doctor_name) {
-                        document.getElementById("doctorName").value = data.doctor_name;
+                    if (data.doctor_id && data.doctor_name) {
+                        document.getElementById("doctorId").value = data.doctor_id; // Set doctor_id
+                        document.getElementById("doctorName").value = data.doctor_name; // Display doctor name
                     } else {
+                        document.getElementById("doctorId").value = "";
                         document.getElementById("doctorName").value = "Doctor not found";
                     }
                 })
                 .catch(error => {
                     console.error("Error fetching doctor details:", error);
+                    document.getElementById("doctorId").value = "";
                     document.getElementById("doctorName").value = "Error fetching doctor";
                 });
         } else {
+            document.getElementById("doctorId").value = "";
             document.getElementById("doctorName").value = "";
         }
     }
+
+    // Call fetchDoctor when patient is selected
+    document.getElementById("patientId").addEventListener("change", fetchDoctor);
+
 </script>
 
 

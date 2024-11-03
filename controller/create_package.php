@@ -13,12 +13,12 @@ $message = "";
 // Check if the form was submitted
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // Get and sanitize form data
-    $patient_id = htmlspecialchars($_POST['patient_id']);
-    $doctor_id = htmlspecialchars($_POST['doctor_id']);
-    $package_name = htmlspecialchars($_POST['package_name']);
-    $package_price = htmlspecialchars($_POST['package_price']);
-    $remaining_hours = htmlspecialchars($_POST['remaining_hours']);
-    $validity_period = htmlspecialchars($_POST['validity_period']);
+    $patient_id = htmlspecialchars($_POST['patient_id'] ?? '');
+    $doctor_id = htmlspecialchars($_POST['doctor_id'] ?? '');
+    $package_name = htmlspecialchars($_POST['package_name'] ?? '');
+    $package_price = htmlspecialchars($_POST['package_price'] ?? '');
+    $remaining_hours = htmlspecialchars($_POST['remaining_hours'] ?? '');
+    $validity_period = htmlspecialchars($_POST['validity_period'] ?? '');
 
     // Check if required fields are not empty
     if (!empty($patient_id) && !empty($doctor_id) && !empty($package_name) && !empty($package_price) && !empty($remaining_hours) && !empty($validity_period)) {
