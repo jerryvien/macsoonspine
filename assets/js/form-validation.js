@@ -1,55 +1,58 @@
-function validateForm() {
-    let isValid = true;
-  
-    // Clear all previous error messages
-    const errorMessages = document.querySelectorAll(".error-message");
-    errorMessages.forEach(msg => msg.remove());
-  
-    // First Name Validation
-    const firstName = document.getElementById("firstName");
-    if (firstName.value.trim() === "") {
-      displayError(firstName, "First Name is required");
-      isValid = false;
-    }
-  
-    // Last Name Validation
-    const lastName = document.getElementById("lastName");
-    if (lastName.value.trim() === "") {
-      displayError(lastName, "Last Name is required");
-      isValid = false;
-    }
-  
-    // Date of Birth Validation
-    const dateOfBirth = document.getElementById("dateOfBirth");
-    if (dateOfBirth.value.trim() === "") {
-      displayError(dateOfBirth, "Date of Birth is required");
-      isValid = false;
-    }
-  
-    // Phone Number Validation
-    const phoneNumber = document.getElementById("phoneNumber");
-    const phonePattern = /^[0-9]{10,15}$/; // Example pattern for phone numbers
-    if (!phonePattern.test(phoneNumber.value.trim())) {
-      displayError(phoneNumber, "Please enter a valid phone number (10-15 digits)");
-      isValid = false;
-    }
-  
-    // Email Validation
-    const email = document.getElementById("email");
+document.addEventListener("DOMContentLoaded", function () {
+  // Attach blur event listeners to input fields for on-demand validation
+  const firstName = document.getElementById("firstName");
+  const lastName = document.getElementById("lastName");
+  const dateOfBirth = document.getElementById("dateOfBirth");
+  const phoneNumber = document.getElementById("phoneNumber");
+  const email = document.getElementById("email");
+
+  firstName.addEventListener("blur", function () {
+    validateField(firstName, "First Name is required", value => value.trim() !== "");
+  });
+
+  lastName.addEventListener("blur", function () {
+    validateField(lastName, "Last Name is required", value => value.trim() !== "");
+  });
+
+  dateOfBirth.addEventListener("blur", function () {
+    validateField(dateOfBirth, "Date of Birth is required", value => value.trim() !== "");
+  });
+
+  phoneNumber.addEventListener("blur", function () {
+    const phonePattern = /^[0-9]{10,15}$/;
+    validateField(
+      phoneNumber,
+      "Please enter a valid phone number (10-15 digits)",
+      value => phonePattern.test(value.trim())
+    );
+  });
+
+  email.addEventListener("blur", function () {
     const emailPattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
-    if (email.value.trim() !== "" && !emailPattern.test(email.value.trim())) {
-      displayError(email, "Please enter a valid email address");
-      isValid = false;
-    }
-  
-    return isValid;
+    validateField(
+      email,
+      "Please enter a valid email address",
+      value => value.trim() === "" || emailPattern.test(value.trim())
+    );
+  });
+});
+
+// Helper function to validate individual fields
+function validateField(inputElement, errorMessage, validationFn) {
+  // Remove previous error message
+  const errorMessages = inputElement.parentElement.querySelectorAll(".error-message");
+  errorMessages.forEach(msg => msg.remove());
+
+  // Validate the input field
+  if (!validationFn(inputElement.value)) {
+    displayError(inputElement, errorMessage);
   }
-  
-  // Function to display error messages
-  function displayError(inputElement, message) {
-    const error = document.createElement("div");
-    error.className = "error-message text-danger";
-    error.innerText = message;
-    inputElement.parentElement.appendChild(error);
-  }
-  
+}
+
+// Function to display error messages
+function displayError(inputElement, message) {
+  const error = document.createElement("div");
+  error.className = "error-message text-danger";
+  error.innerText = message;
+  inputElement.parentElement.appendChild(error);
+}
