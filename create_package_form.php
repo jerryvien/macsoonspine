@@ -88,18 +88,21 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/config/sidebar.php';
                             <div class="row mb-3">
                                 <label for="patientId" class="col-md-4 col-lg-3 col-form-label">Patient</label>
                                 <div class="col-md-8 col-lg-9">
-                                <select name="patient_id" class="form-control select2" id="patientId" required onchange="fetchDoctor();">
-                                    <option value="">Select a Patient</option>
-                                    <?php foreach ($patients as $patient): ?>
-                                        <option value="<?= $patient['patient_id'] ?>"><?= htmlspecialchars($patient['first_name'] . ' ' . $patient['last_name']) ?></option>
-                                    <?php endforeach; ?>
-                                </select>
+                                    <select name="patient_id" class="form-control select2" id="patientId" required>
+                                        <option value="">Select a Patient</option>
+                                        <?php foreach ($patients as $patient): ?>
+                                            <option value="<?= $patient['patient_id'] ?>"><?= htmlspecialchars($patient['first_name'] . ' ' . $patient['last_name']) ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
                                 </div>
                             </div>
+
                             <div class="row mb-3">
-                                <label for="doctorName" class="col-md-4 col-lg-3 col-form-label">Assigned Doctor</label>
+                                <label for="doctorId" class="col-md-4 col-lg-3 col-form-label">Assigned Doctor</label>
                                 <div class="col-md-8 col-lg-9">
+                                    <!-- Ensure this field is populated and readonly -->
                                     <input type="text" class="form-control" id="doctorName" name="doctor_name" readonly>
+                                    <input type="hidden" id="doctorId" name="doctor_id"> <!-- Hidden field to hold the doctor_id -->
                                 </div>
                             </div>
 
