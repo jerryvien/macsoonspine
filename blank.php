@@ -39,6 +39,11 @@
 </head>
 
 <body>
+  
+  <?php
+  include 'config.php';
+  // You can now use $conn to interact with your database
+  ?>
 
   <?php include 'config/topbar.php'; ?>
 
