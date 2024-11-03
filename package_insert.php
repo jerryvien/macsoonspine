@@ -1,6 +1,7 @@
 <?php
 // Include the database connection
-require_once '../config/database.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/config/database.php';
+
 
 // Initialize variables to store data for dropdowns
 $patients = [];
@@ -63,8 +64,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <body>
 
 <?php
-include '../config/topbar.php'; // Include the top bar
-include '../config/sidebar.php'; // Include the sidebar
+require_once $_SERVER['DOCUMENT_ROOT'] . '/config/topbar.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/config/sidebar.php';
 ?>
 
 <main id="main" class="main">
